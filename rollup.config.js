@@ -60,7 +60,7 @@ switch (env) {
       },
       name: 'MuseModel'
     });
-    // plugins.push(uglify());
+    plugins.push(uglify());
     break;
 }
 
