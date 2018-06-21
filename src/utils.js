@@ -31,31 +31,6 @@ export function changeState (state, payload) {
   Object.keys(result).forEach((key) => (state[key] = result[key]));
 }
 
-export function allIn (state, actions, getters) {
-  let computed = {};
-  let methods = {};
-
-  Object.keys(state).forEach((key) => {
-    computed = {
-      ...computed,
-      ...state[key],
-      ...getters[key]
-    };
-  });
-
-  Object.keys(actions).forEach((key) => {
-    methods = {
-      ...methods,
-      ...actions[key]
-    };
-  });
-
-  return {
-    computed,
-    methods
-  };
-}
-
 export function getMergeOptions (map) {
   const actions = {};
   Object.keys(map).forEach(key => typeof map[key] === 'function' && (actions[key] = map[key]));

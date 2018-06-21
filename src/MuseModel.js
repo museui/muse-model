@@ -1,5 +1,5 @@
-import { setMuseModel, generateModel } from './model';
-import { error, allIn } from './utils';
+import { setMuseModel } from './model';
+import { error } from './utils';
 import { mapState, mapGetters } from 'vuex';
 
 export default class MuseModel {
@@ -51,35 +51,5 @@ export default class MuseModel {
       map[namespace] = this.modelMap[namespace];
     });
     return map;
-  }
-
-  connect (component, models, mergeFunc) { // 兼容老版本API
-    const state = {};
-    const actions = {};
-    const getters = {};
-    if (!Array.isArray(models)) models = [models];
-    models.forEach(model => {
-      if (!model.namespace) return;
-      this.registerModel(generateModel(model));
-      const namespace = model.namespace;
-      const map = this.modelMap[namespace];
-      state[namespace] = map.state;
-      getters[namespace] = map.getters;
-      actions[namespace] = {};
-      Object.keys(map).forEach((key) => {
-        if (typeof map[key] !== 'function') return;
-        actions[namespace][key] = map[key];
-      });
-    });
-    const mergeProp = (mergeFunc || allIn)(state, actions, getters);
-    component.computed = {
-      ...mergeProp.computed,
-      ...component.computed
-    };
-    component.methods = {
-      ...mergeProp.methods,
-      ...component.methods
-    };
-    return component;
   }
 };
