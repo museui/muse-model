@@ -55,11 +55,12 @@ switch (env) {
       file: `dist/${name}.js`,
       format: 'umd',
       globals: {
-        vue: 'Vue'
+        vue: 'Vue',
+        vuex: 'Vuex'
       },
       name: 'MuseModel'
     });
-    plugins.push(uglify());
+    // plugins.push(uglify());
     break;
 }
 

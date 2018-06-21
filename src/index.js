@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import MuseModel from './MuseModel';
-export { default as Model } from './model';
+import Model from './model';
 import mixin from './mixin';
 
 export function createMuseModel (options) {
@@ -8,6 +8,8 @@ export function createMuseModel (options) {
   new MuseModel(store);
   return store;
 }
+
+export { Model };
 export default {
   version: '__VERSION__',
   install (Vue) {

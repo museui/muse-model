@@ -1,5 +1,4 @@
 import { changeState, error, isPlainObject, isPromise } from './utils';
-import mixin from './mixin';
 
 let museModel;
 let models = [];
