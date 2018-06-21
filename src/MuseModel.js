@@ -3,7 +3,7 @@ import { error, allIn } from './utils';
 import { mapState, mapGetters } from 'vuex';
 
 export default class MuseModel {
-  constructor (store, ) {
+  constructor (store) {
     this.$store = store;
     this.models = [];
     this.modelMap = {};

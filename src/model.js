@@ -1,4 +1,5 @@
 import { changeState, error, isPlainObject, isPromise } from './utils';
+import mixin from './mixin';
 
 let museModel;
 let models = [];
@@ -25,9 +26,29 @@ export default function (model) {
   return model;
 }
 
+function mergeMixins (model, mixins) {
+  if (!mixins || !Array.isArray(mixins) || mixins.length === 0) return;
+  mixins.forEach((mixin) => {
+    mergeMixins(model, mixin.mixins);
+    ['getters', 'state'].forEach((name) => {
+      model[name] = {
+        ...(mixin[name] || {}),
+        ...(model[name] || {})
+      };
+    });
+    Object.keys(mixin).forEach((key) => {
+      if (typeof mixin[key] !== 'function') return;
+      if (model[key]) return;
+      model[key] = mixin[key];
+    });
+  });
+}
+
 function generateModel (model) {
   if (!model || !model.namespace) error('unable generate null model, model must have a namespace');
   const namespace = model.namespace;
+  mergeMixins(model, model.mixins);
+  delete model.mixins;
   const module = {
     namespaced: true,
     state: model.state || {},

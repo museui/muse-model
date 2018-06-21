@@ -1,7 +1,8 @@
 import { Model } from '../../src';
-
+import mixin from './mixin';
 export default Model({
   namespace: 'count',
+  mixins: [mixin],
   state: {
     count: 1
   },
@@ -25,20 +26,5 @@ export default Model({
     return {
       count: this.state.count + num
     };
-  },
-  addDispatch () {
-    return {
-      count: this.state.count + 1
-    };
-  },
-
-  addTimeOut () {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve({
-          count: this.state.count + 1
-        });
-      }, 1000);
-    });
   }
 });
