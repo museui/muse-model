@@ -9,8 +9,10 @@ export function createMuseModel (options) {
   return store;
 }
 export default {
+  version: '__VERSION__',
   install (Vue, options) {
     Vue.use(Vuex);
     Vue.mixin(mixin);
-  }
+  },
+  createMuseModel
 };
