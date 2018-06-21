@@ -10,7 +10,7 @@ export function createMuseModel (options) {
 }
 export default {
   version: '__VERSION__',
-  install (Vue, options) {
+  install (Vue) {
     Vue.use(Vuex);
     Vue.mixin(mixin);
   },
