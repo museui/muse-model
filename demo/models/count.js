@@ -1,6 +1,6 @@
-import { model } from '../../src';
+import { Model } from '../../src';
 
-export default model({
+export default Model({
   namespace: 'count',
   state: {
     count: 1

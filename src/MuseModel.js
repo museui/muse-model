@@ -3,20 +3,10 @@ import { error, allIn } from './utils';
 import { mapState, mapGetters } from 'vuex';
 
 export default class MuseModel {
-  constructor (store, options = {}) {
+  constructor (store, ) {
     this.$store = store;
-    this.$options = options;
     this.models = [];
     this.modelMap = {};
-    this._init();
-  }
-  _init () {
-    if (this.$options.models) {
-      this.$options.models.forEach((model) => {
-        if (!model) return;
-        this.registerModel(model);
-      });
-    }
     setMuseModel(this);
   }
   hasModel (namespace) {

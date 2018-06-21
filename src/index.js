@@ -1,12 +1,16 @@
+import Vuex from 'vuex';
 import MuseModel from './MuseModel';
-export { default as model } from './model';
+export { default as Model } from './model';
 import mixin from './mixin';
 
-export function createMuseModel (store, options) {
-  return new MuseModel(store, options);
+export function createMuseModel (options) {
+  const store = new Vuex.Store(options);
+  new MuseModel(store);
+  return store;
 }
 export default {
-  install (Vue) {
+  install (Vue, options) {
+    Vue.use(Vuex);
     Vue.mixin(mixin);
   }
 };

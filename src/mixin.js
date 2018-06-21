@@ -42,6 +42,5 @@ export default {
       ...(merge.methods || {}),
       ...options.methods
     };
-    console.log(this.$options);
   }
 };
