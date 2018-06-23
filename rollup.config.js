@@ -6,8 +6,8 @@ import postcss from 'rollup-plugin-postcss';
 import replace from 'rollup-plugin-replace';
 import packageJson from './package.json';
 
-const name = packageJson.name;
-const banner = `/* ${name} myron.liu version ${packageJson.version} */`;
+const { name, version } = packageJson;
+const banner = `/* ${name} myron.liu version ${version} */`;
 const env = process.env.NODE_ENV;
 const plugins = [
   postcss({ extensions: ['.less'], extract: `dist/${name}${env === 'production' ? '.all' : ''}.css` }),
@@ -29,44 +29,41 @@ const plugins = [
     ]
   }),
   replace({
-    '__VERSION__': packageJson.version
+    '__VERSION__': version
   })
 ];
 const external = ['vue', 'vuex'];
-const output = [];
 const input = 'src/index.js';
 
-switch (env) {
-  case 'module':
-    output.push({
-      banner,
-      file: `dist/${name}.common.js`,
-      format: 'cjs'
-    });
-    output.push({
-      banner,
-      file: `dist/${name}.esm.js`,
-      format: 'es'
-    });
-    break;
-  case 'production':
-    output.push({
-      banner,
-      file: `dist/${name}.js`,
-      format: 'umd',
-      globals: {
-        vue: 'Vue',
-        vuex: 'Vuex'
-      },
-      name: 'MuseModel'
-    });
-    plugins.push(uglify());
-    break;
-}
-
-export default {
+export default [{
   input,
-  output,
-  plugins,
+  output: [{
+    banner,
+    file: `dist/${name}.common.js`,
+    format: 'cjs'
+  }, {
+    banner,
+    file: `dist/${name}.esm.js`,
+    format: 'es'
+  }],
+  plugins: plugins,
   external
-};
+}, {
+  input,
+  output: {
+    banner,
+    file: `dist/${name}.js`,
+    format: 'umd',
+    globals: {
+      vue: 'Vue',
+      vuex: 'Vuex'
+    },
+    name: 'MuseModel'
+  },
+  plugins: [
+    ...plugins,
+    uglify()
+  ],
+  external
+}];
+
