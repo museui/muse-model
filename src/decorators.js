@@ -1,9 +1,12 @@
 import Model, { resolveResult } from './model';
-import { changeState } from './utils';
-export function model (namespace) {
+import { changeState, error } from './utils';
+
+export function model (namespace, mixins) {
+  if (!namespace) error('unable generate null model, model must have a namespace');
   return (Class) => {
     const instance = new Class();
     instance.namespace = namespace;
+    mergeMixins(instance, mixins);
     const module = {
       namespaced: true,
       state: instance.state,
@@ -31,7 +34,6 @@ export function model (namespace) {
         result.getters[name] = module.getters[name] = getter;
       });
     }
-    console.log('model', result);
     return Model(result, true);
   };
 }
@@ -52,4 +54,28 @@ export function getter (target, name, descriptor) {
   if (!target._getters) target._getters = [];
   target._getters.push(name);
   return descriptor;
+}
+
+function mergeMixins (proto, mixins) {
+  if (!mixins || !Array.isArray(mixins) || mixins.length === 0) return;
+  mixins.forEach((mixin) => {
+    mergeMixins(proto, mixin.mixins);
+    proto.state = {
+      ...(mixin.state || {}),
+      ...(proto.state || {})
+    };
+    if (mixin.getters) {
+      Object.keys(mixin.getters).forEach((key) => {
+        if (proto[key]) return;
+        getter(proto, key);
+        proto[key] = mixin.getters[key];
+      });
+    }
+    Object.keys(mixin).forEach((key) => {
+      if (typeof mixin[key] !== 'function') return;
+      if (proto[key]) return;
+      const value = action(proto, key, { value: mixin[key] }).value;
+      proto[key] = value;
+    });
+  });
 }

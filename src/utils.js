@@ -8,7 +8,8 @@ export function warn (msg, err) {
 }
 
 export function error (msg) {
-  throw new Error(`[muse-model] ${msg}`);
+  console.error(`[muse-model] ${msg}`);
+  throw new Error('muse-model run error');
 };
 
 const toString = Object.prototype.toString;

@@ -1,5 +1,5 @@
 <template>
-<div><button @click="addNum(3)">+</button>{{count}}<button @click="sub()">-</button>{{computedCount}}</div>
+<div><button @click="addTimeOut(3)">+</button>{{count}}<button @click="sub()">-</button>{{computedCount}} {{msg}} {{list.loading ? 'loading...' : 'loaded'}}</div>
 </template>
 <script>
 import Count from './models/CountModel';
