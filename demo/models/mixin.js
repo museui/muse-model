@@ -3,6 +3,11 @@ export default {
     num: 2,
     count: 4
   },
+  getters: {
+    msg () {
+      return this.state.num + 2;
+    }
+  },
   addDispatch () {
     return {
       count: this.state.count + 1

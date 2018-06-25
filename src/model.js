@@ -15,8 +15,8 @@ export function getMuseModel () {
   return museModel;
 }
 
-export default function (model) {
-  model = generateModel(model);
+export default function (model, isGenerate) {
+  if (!isGenerate) model = generateModel(model);
   if (museModel) {
     museModel.registerModel(model);
   } else {
@@ -68,20 +68,23 @@ function generateModel (model) {
     const action = model[actionKey];
     module.mutations[mutationType] = changeState;
     storeModel[actionKey] = function (...args) {
-      if (!museModel) error('not MuseModel instance, please add new MuseModel(store).');
-      const $store = museModel.$store;
       const result = action.apply(storeModel, args);
-      switch (true) {
-        case isPlainObject(result):
-          $store.commit({ type: path, result });
-          return result;
-        case isPromise(result):
-          result.then(result => $store.commit({ type: path, result }));
-          return result;
-      }
-      return result;
+      return resolveResult(result, path);
     };
   });
 
   return storeModel;
+}
+export function resolveResult (result, path) {
+  if (!museModel) error('not MuseModel instance, please add new MuseModel(store).');
+  const $store = museModel.$store;
+  switch (true) {
+    case isPlainObject(result):
+      $store.commit({ type: path, result });
+      return result;
+    case isPromise(result):
+      result.then(result => $store.commit({ type: path, result }));
+      return result;
+  }
+  return result;
 }
