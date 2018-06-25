@@ -94,6 +94,54 @@ export default {
 </script>
 ```
 
+## Use Class Model
+
+```javascript
+import { model, action, getter } from 'muse-model';
+export default class Count {
+  state = {
+    count: 3,
+    list: {
+      loading: false
+    }
+  };
+
+  @action add () {
+    return {
+      count: this.state.count + 1
+    };
+  }
+  @action sub () {
+    return {
+      count: this.state.count - 1
+    };
+  }
+
+  @action addNum (num) {
+    this.add();
+    return {
+      count: this.state.count + num
+    };
+  }
+  @loading('list.loading')
+  @action
+  addTimeOut () {
+    return new Promise((res) => {
+      setTimeout(() => {
+        res({
+          count: this.state.count + 1
+        });
+      }, 2000);
+    });
+  }
+
+  @getter
+  computedCount () {
+    return this.state.count + 2;
+  }
+}
+```
+
 ## License
 
  [MIT](http://opensource.org/licenses/MIT)
