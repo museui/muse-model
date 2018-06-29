@@ -1,25 +1,23 @@
 import { StoreOptions, Store, Module } from 'vuex';
 import { PluginFunction } from 'vue';
 
-export function createMuseModel(options: StoreOptions): Store;
-
 type PlainObject = {
-  [key: string]: any
+  [key: string]: any;
 };
 
 interface ModelOptions {
   namespace: string;
   state: PlainObject;
   getters?: any;
-  [key: String]: any;
-};
+  [key: string]: any;
+}
 
 interface ModelModuleOptions {
   namespace: string;
   state: PlainObject;
   getters?: any;
-  module: Module;
-  [key: String]: any;
+  module: Module<any, any>;
+  [key: string]: any;
 }
 
 interface MethodsDecorator {
@@ -33,13 +31,14 @@ interface LoadingDecorator extends MethodsDecorator {
 interface Mixin {
   state: PlainObject;
   getters?: any;
-  [key: String]: any;
+  [key: string]: any;
 }
 
 interface ModelDecorator {
   (namespace: string, mixins?: Mixin): (Class: any) => ModelModuleOptions;
 }
 
+export function createMuseModel(options: StoreOptions<any>): Store<any>;
 export const loading: LoadingDecorator;
 export const action: MethodsDecorator;
 export const getter: MethodsDecorator;
@@ -48,6 +47,6 @@ export const model: ModelDecorator;
 export function Model (options: ModelOptions): ModelModuleOptions;
 export default interface MuseModel {
   version: string;
-  install: PluginFunction;
+  install: PluginFunction<never>;
   createMuseModel;
 }

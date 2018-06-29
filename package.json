@@ -7,6 +7,12 @@
   "module": "dist/muse-model.esm.js",
   "unpkg": "dist/muse-model.js",
   "jsdelivr": "dist/muse-model.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "types"
+  ],
   "directories": {
     "test": "test"
   },
