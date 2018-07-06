@@ -16,7 +16,7 @@ export default {
         const maps = museModel.getModelMap.apply(museModel, options.connect);
         merge.computed = {};
         merge.methods = {};
-        maps.forEach((map) => {
+        Object.keys(maps).forEach((map) => {
           const options = getMergeOptions(map);
           merge.computed = {
             ...merge.computed,
