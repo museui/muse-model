@@ -75,15 +75,16 @@ function generateModel (model) {
 
   return storeModel;
 }
+
 export function resolveResult (result, path) {
   if (!museModel) error('not MuseModel instance, please add new MuseModel(store).');
   const $store = museModel.$store;
   switch (true) {
-    case isPlainObject(result):
-      $store.commit({ type: path, result });
-      return result;
     case isPromise(result):
       result.then(result => $store.commit({ type: path, result }));
+      return result;
+    case isPlainObject(result):
+      $store.commit({ type: path, result });
       return result;
   }
   return result;
