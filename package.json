@@ -1,6 +1,6 @@
 {
   "name": "muse-model",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "vue state manager",
   "author": "museui",
   "main": "dist/muse-model.common.js",
