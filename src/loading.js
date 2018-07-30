@@ -27,7 +27,10 @@ function resolveLoading (target, name = 'loading', descriptor) {
       $store.commit({ type: HIDE, attrs });
       return res;
     };
-    return result.then(handleThen, handleThen);
+    return result.then(handleThen, (res) => {
+      handleThen(res);
+      return Promise.reject(res);
+    });
   };
   return descriptor;
 }
