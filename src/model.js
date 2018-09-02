@@ -1,82 +1,64 @@
-import { changeState, error, isPlainObject, isPromise } from './utils';
+import { changeState, error, isPromise, isPlainObject } from './utils';
+import { registerModel, getMuseModel } from './MuseModel';
 
-let museModel;
-let models = [];
-
-export function setMuseModel (instance) {
-  museModel = instance;
-  if (models && models.length > 0) {
-    models.forEach((model) => museModel.registerModel(model));
-    models = [];
-  }
-}
-
-export function getMuseModel () {
-  return museModel;
-}
-
-export default function (model, isGenerate) {
-  if (!isGenerate) model = generateModel(model);
-  if (museModel) {
-    museModel.registerModel(model);
-  } else {
-    models.push(model);
+export function model (namespace) {
+  if (!namespace) error('unable generate null model, model must have a namespace');
+  return (Class) => {
+    const instance = new Class();
+    instance.namespace = namespace;
+    createModule(instance);
+    registerModel(instance);
+    return instance;
   };
-  return model;
 }
 
-function mergeMixins (model, mixins) {
-  if (!mixins || !Array.isArray(mixins) || mixins.length === 0) return;
-  mixins.forEach((mixin) => {
-    mergeMixins(model, mixin.mixins);
-    ['getters', 'state'].forEach((name) => {
-      model[name] = {
-        ...(mixin[name] || {}),
-        ...(model[name] || {})
-      };
-    });
-    Object.keys(mixin).forEach((key) => {
-      if (typeof mixin[key] !== 'function') return;
-      if (model[key]) return;
-      model[key] = mixin[key];
-    });
-  });
+export function action (target, name, descriptor) {
+  if (!target._actions) target._actions = [];
+  target._actions.push(name);
+  const oldValue = descriptor.value;
+  descriptor.value = function () {
+    const path = `${this.namespace}/${name}`;
+    const result = oldValue.apply(this, arguments);
+    return resolveResult(result, path);
+  };
+  return descriptor;
 }
 
-function generateModel (model) {
-  if (!model || !model.namespace) error('unable generate null model, model must have a namespace');
-  const namespace = model.namespace;
-  mergeMixins(model, model.mixins);
-  delete model.mixins;
+export function getter (target, name, descriptor) {
+  if (!target._getters) target._getters = [];
+  target._getters.push(name);
+  return descriptor;
+}
+
+function createModule (instance) {
   const module = {
     namespaced: true,
-    state: model.state || {},
-    getters: model.getters || {},
+    state: instance.state,
+    getters: {},
     mutations: {}
   };
-  const storeModel = {
-    namespace,
-    state: model.state,
-    getters: module.getters,
-    module
-  };
+  if (instance._actions && instance._actions.length > 0) {
+    instance._actions.forEach(action => {
+      module.mutations[action] = changeState;
+    });
+  }
 
-  Object.keys(model).forEach((actionKey) => {
-    if (typeof model[actionKey] !== 'function') return;
-    const mutationType = actionKey;
-    const path = `${namespace}/${mutationType}`;
-    const action = model[actionKey];
-    module.mutations[mutationType] = changeState;
-    storeModel[actionKey] = function (...args) {
-      const result = action.apply(storeModel, args);
-      return resolveResult(result, path);
-    };
-  });
-
-  return storeModel;
+  if (instance._getters && instance._getters.length > 0) {
+    instance.getters = {};
+    instance._getters.forEach(name => {
+      if (!instance[name]) return;
+      const getter = instance[name];
+      instance.getters[name] = module.getters[name] = (...args) => {
+        return getter.apply(instance, args);
+      };
+    });
+  }
+  instance.__module__ = module;
+  return module;
 }
 
 export function resolveResult (result, path) {
+  const museModel = getMuseModel();
   if (!museModel) error('not MuseModel instance, please add new MuseModel(store).');
   const $store = museModel.$store;
   switch (true) {

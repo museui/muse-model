@@ -1,8 +1,7 @@
 import Vuex from 'vuex';
 import MuseModel from './MuseModel';
-import Model from './model';
 import mixin from './mixin';
-import { model, action, getter } from './decorators';
+import { model, getter, action } from './model';
 import { mutations, loading } from './loading';
 
 export function createMuseModel (options = {}) {
@@ -16,7 +15,8 @@ export function createMuseModel (options = {}) {
   return store;
 }
 
-export { Model, loading, model, action, getter };
+export { loading, model, action, getter };
+
 export default {
   version: '__VERSION__',
   install (Vue) {

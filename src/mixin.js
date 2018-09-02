@@ -1,4 +1,4 @@
-import { getMuseModel } from './model';
+import { getMuseModel } from './MuseModel';
 import { error, isPlainObject, getMergeOptions } from './utils';
 
 export default {

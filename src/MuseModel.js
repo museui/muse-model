@@ -1,4 +1,3 @@
-import { setMuseModel } from './model';
 import { error } from './utils';
 import { mapState, mapGetters } from 'vuex';
 
@@ -9,6 +8,7 @@ export default class MuseModel {
     this.modelMap = {};
     setMuseModel(this);
   }
+
   hasModel (namespace) {
     let index = -1;
     for (let i = 0; i < this.models.length; i++) {
@@ -19,13 +19,15 @@ export default class MuseModel {
     }
     return index !== -1;
   }
+
   registerModel (model) {
-    if (!model.namespace || !model.module) error(`${model.namespace} is not model, please use model(options)`);
+    if (!model.namespace || !model.__module__) error(`${model.namespace} is not model, please use model(options)`);
     if (this.hasModel(model)) return;
-    this.$store.registerModule(model.namespace, model.module);
+    this.$store.registerModule(model.namespace, model.__module__);
     this.models.push(model);
     this.modelMap[model.namespace] = this.generateModelMap(model);
   }
+
   generateModelMap (model) {
     const result = {
       state: {},
@@ -36,11 +38,12 @@ export default class MuseModel {
     result.state = mapState(result.state);
     Object.keys(model.getters).forEach(key => (result.getters[key] = `${namespace}/${key}`));
     result.getters = mapGetters(result.getters);
-    Object.keys(model).forEach((key) => {
+    model._actions.forEach(key => {
       if (typeof model[key] !== 'function') return;
-      result[key] = model[key];
+      result[key] = (...args) => {
+        return model[key].apply(model, args);
+      };
     });
-
     return result;
   }
 
@@ -52,4 +55,28 @@ export default class MuseModel {
     });
     return map;
   }
-};
+}
+
+let museModel;
+let models = [];
+
+export function getMuseModel () {
+  return museModel;
+}
+
+export function setMuseModel (instance) {
+  museModel = instance;
+  if (models && models.length > 0) {
+    models.forEach((model) => museModel.registerModel(model));
+    models = [];
+  }
+}
+
+export function registerModel (model) {
+  if (museModel) {
+    museModel.registerModel(model);
+  } else {
+    models.push(model);
+  };
+  return model;
+}

@@ -1,5 +1,5 @@
 import { isPromise, error } from './utils';
-import { getMuseModel } from './model';
+import { getMuseModel } from './MuseModel';
 const SHOW = 'MUSE_MODEL_SHOW_LOADING';
 const HIDE = 'MUSE_MODEL_HIDE_LOADING';
 
