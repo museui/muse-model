@@ -1,5 +1,6 @@
 import { error } from './utils';
 import { mapState, mapGetters } from 'vuex';
+import { callHook } from './extensions';
 
 export default class MuseModel {
   constructor (store) {
@@ -7,6 +8,7 @@ export default class MuseModel {
     this.models = [];
     this.modelMap = {};
     setMuseModel(this);
+    callHook('init', this);
   }
 
   hasModel (namespace) {

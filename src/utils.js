@@ -45,3 +45,23 @@ export function getMergeOptions (map) {
     }
   };
 };
+
+export function getObjAttr (obj, attrs) {
+  if (!obj || !attrs) return;
+  let value = obj;
+  attrs.split('.').forEach((key, index) => {
+    if (!value) return;
+    value = value[key];
+  });
+  return value;
+}
+
+export function setObjAttr (obj, attrs, value) {
+  attrs.split('.').forEach((key, index) => {
+    if (attrs.length - index <= 1) {
+      obj[key] = value;
+      return;
+    }
+    obj = obj[key];
+  });
+}

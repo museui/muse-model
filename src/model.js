@@ -1,12 +1,15 @@
 import { changeState, error, isPromise, isPlainObject } from './utils';
 import { registerModel, getMuseModel } from './MuseModel';
+import { callHook } from './extensions';
 
 export function model (namespace) {
   if (!namespace) error('unable generate null model, model must have a namespace');
   return (Class) => {
     const instance = new Class();
     instance.namespace = namespace;
+    callHook('modelInit', instance, getMuseModel());
     createModule(instance);
+    callHook('createdModule', instance, getMuseModel());
     registerModel(instance);
     return instance;
   };

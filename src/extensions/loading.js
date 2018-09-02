@@ -1,5 +1,5 @@
-import { isPromise, error } from './utils';
-import { getMuseModel } from './MuseModel';
+import { isPromise, error } from '../utils';
+import { getMuseModel } from '../MuseModel';
 const SHOW = 'MUSE_MODEL_SHOW_LOADING';
 const HIDE = 'MUSE_MODEL_HIDE_LOADING';
 
@@ -35,16 +35,18 @@ function resolveLoading (target, name = 'loading', descriptor) {
   return descriptor;
 }
 
-export const mutations = {
-  [SHOW] (state, payload) {
-    setObjAttr(state, payload.attrs, true);
-  },
-  [HIDE] (state, payload) {
-    setObjAttr(state, payload.attrs, false);
-  }
-};
-
 export const loading = function (name) {
   if (typeof name === 'string') return (target, n, descriptor) => resolveLoading(target, name, descriptor);
   return resolveLoading(arguments[0], 'loading', arguments[2]);
+};
+
+export default {
+  mutations: {
+    [SHOW] (state, payload) {
+      setObjAttr(state, payload.attrs, true);
+    },
+    [HIDE] (state, payload) {
+      setObjAttr(state, payload.attrs, false);
+    }
+  }
 };
