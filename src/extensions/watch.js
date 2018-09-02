@@ -11,28 +11,12 @@ export function watch (path) {
   };
 }
 
-const watchs = [];
-function createWatch ($store, { watchFn, callback }) {
-  $store.watch(watchFn, callback);
-}
-
 export default {
-  modelInit (model, museModel) {
+  registered (model, museModel) {
     if (!model._watchs || model._watchs.length === 0) return;
+    const $store = museModel.$store;
     model._watchs.forEach(({ path, name }) => {
-      const item = {
-        watchFn: (state) => getObjAttr(state, path),
-        callback: (...args) => model[name].apply(model, args)
-      };
-      if (museModel) {
-        createWatch(museModel.$store, item);
-      } else {
-        watchs.push(item);
-      }
+      $store.watch(state => getObjAttr(state, path), (...args) => model[name].apply(model, args));
     });
-  },
-  init (museModel) {
-    if (watchs.length === 0) return;
-    watchs.forEach(item => createWatch(museModel.$store, item));
   }
 };

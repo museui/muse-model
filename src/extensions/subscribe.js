@@ -9,27 +9,14 @@ export function subscrible (path) {
   };
 }
 
-const subscribles = [];
-
-function createSubscrible ($store, func) {
-  $store.subscribe(func);
-}
-
 export default {
-  modelInit (model, museModel) {
+  registered (model, museModel) {
+    if (!model._subscribles || model._subscribles.length === 0) return;
+    const $store = museModel.$store;
     model._subscribles.forEach(({ path, name }) => {
-      const func = ({ type, payload }, state) => {
+      $store.subscribe(({ type, payload }, state) => {
         if (type === path) return model[name](payload.result, state);
-      };
-      if (museModel) {
-        createSubscrible(museModel.$store, func);
-      } else {
-        subscribles.push(func);
-      }
+      });
     });
-  },
-  init (museModel) {
-    if (subscribles.length === 0) return;
-    subscribles.forEach(func => createSubscrible(museModel.$store, func));
   }
 };

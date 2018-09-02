@@ -28,6 +28,7 @@ export default class MuseModel {
     this.$store.registerModule(model.namespace, model.__module__);
     this.models.push(model);
     this.modelMap[model.namespace] = this.generateModelMap(model);
+    callHook('registered', model, this);
   }
 
   generateModelMap (model) {
