@@ -57,7 +57,8 @@ export function getObjAttr (obj, attrs) {
 }
 
 export function setObjAttr (obj, attrs, value) {
-  attrs.split('.').forEach((key, index) => {
+  attrs = attrs.split('.');
+  attrs.forEach((key, index) => {
     if (attrs.length - index <= 1) {
       obj[key] = value;
       return;

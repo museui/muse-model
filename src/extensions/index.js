@@ -12,6 +12,7 @@ export const extensions = [
 
 export function callHook (name, ...args) {
   extensions.forEach(extension => {
+    if (!extension[name]) return;
     extension[name].apply(extension, args);
   });
 }

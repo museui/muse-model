@@ -1,4 +1,4 @@
-import { model, getter, action, loading } from '../../src';
+import { model, getter, action, loading, watch } from '../../src';
 import mixin from './mixin';
 
 @model('count', [mixin])
@@ -40,5 +40,10 @@ export default class Count {
   @getter
   computedCount () {
     return this.state.count + 2;
+  }
+
+  @watch('count.count')
+  watchCount (val, oldVal) {
+    console.log('watch', val, oldVal);
   }
 }
