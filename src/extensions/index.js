@@ -1,13 +1,11 @@
 import loadingExtension, { loading } from './loading';
 import watchExtension, { watch } from './watch';
 import subscribeExension, { subscribe } from './subscribe';
-// import formExension from './form';
 
 export const extensions = [
   loadingExtension,
   watchExtension,
   subscribeExension
-  // formExension
 ];
 
 export function callHook (name, ...args) {
